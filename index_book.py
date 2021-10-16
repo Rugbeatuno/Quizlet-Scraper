@@ -55,10 +55,7 @@ def optimise_updates():
         elif 'Page' in prompt:
             groups[current_chapter].append(i)
             current_chapter += 1
-    print(groups)
-    print(groups[3])
-    for i in groups[3]:
-        print(i.text)
+
     # groups is a dictionary with keys that are the chapters in the book
     # each key is responsible for a list of all the sections in its given chapter
     # this will cycle through all the values in each array starting at 0...1...2
@@ -72,11 +69,13 @@ def optimise_updates():
             if values:
                 round.append(values[0])
                 del groups[key][0]
+            else:
+                round.append(None)
+        if round[:-1] == round[1:]:
+            return order
         if round:
             order.append(round)
-            continue
-        break
-    return order
+
 
 def get_all_problems():
     hrefs = []
@@ -95,9 +94,13 @@ def get_all_problems():
     order = optimise_updates()
     for index, y in enumerate(order):
         for i in y:
-            actions = ActionChains(driver)
-            actions.move_to_element(i).perform()
-            i.click()
+            if i:
+                try:
+                    actions = ActionChains(driver)
+                    actions.move_to_element(i).perform()
+                    i.click()
+                except:
+                    pass
 
         exercises = driver.find_elements_by_class_name('e1dpg9do')
         for exercise in exercises:
@@ -125,7 +128,7 @@ def login():
     username = driver.find_element_by_id('password')
     username.send_keys('Keyboard123!')
     time.sleep(0.2)
-    submit = driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/section/div[2]/div/form/button')
+    submit = driver.find_element_by_css_selector("button[type='submit']")
     actions.move_to_element(submit).perform()
     time.sleep(0.2)
     submit.click()

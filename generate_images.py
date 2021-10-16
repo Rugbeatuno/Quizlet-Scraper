@@ -97,6 +97,7 @@ def prompt_user():
             wanted_problems.extend((data[chapter][sec][problems.index(i)], f'{sec}-{i}.png') for i in input('\nEnter problem(s), separate with spaces: ').split(' '))
 
         login()
+        time.sleep(3)
         for problem in wanted_problems:
             url = data['url'] + problem[0]
             get_solution(url)
